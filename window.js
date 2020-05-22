@@ -1,11 +1,16 @@
+var s;
+
 function setup()
 {
 	createCanvas(640,640);
+	s= new Game();
 }
 
 function draw()
 {
 	background(51);
+	s.update();
+	s.show();
 }
 
 function Game()
