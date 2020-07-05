@@ -1,6 +1,7 @@
 let s;
 let scal = 15;
 var food;
+var highScore = 0;
 
 function setup()
 {
@@ -112,6 +113,21 @@ function Game()
     rect(this.x,this.y,scal,scal);
 
     fill(155);
+    if(this.moveHistory.length === 0)
+    {
+      fill(100, 255, 100);
+    }
+    else if(this.moveHistory.length%10 ===0 || highScore%10 ===0)
+    {
+      fill(100, 255, 100);
+      fill(255, 0, 100);
+    }
+
     text('SCORE: '+ this.moveHistory.length, 570, 15);
+    if(highScore<this.moveHistory.length)
+    {
+      highScore = this.moveHistory.length
+    }
+    text('HIGH: '+ highScore, 10, 15);
   }
 }
