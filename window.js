@@ -2,9 +2,9 @@ let s;
 let scal = 15;
 var food;
 var highScore = 0;
-var CHECK_LOG = true;
-var CHECK_LOG_KEYPRESS = true;
-var CHECK_LOG_ERRORKEYS = true;
+var CHECK_LOG = false;
+var CHECK_LOG_KEYPRESS = false;
+var CHECK_LOG_ERRORKEYS = false;
 var directionString;
 var init_game = 1;
 var arrowPressed =0;
@@ -212,8 +212,6 @@ function Game()
       var distance = dist(this.x,this.y,loc.x,loc.y);
       if(distance < 1)
       {
-        this.total = 0;
-        this.moveHistory  = [];
         if(CHECK_LOG)
         {
           console.log('Collision : Game Over');
@@ -232,6 +230,8 @@ function Game()
         textFont(font);
         textSize(16);
         text('Click to continue',width/2 ,height/3 + 80);
+        this.total = 0;
+        this.moveHistory  = [];
         gameOverFlag = 1;  //gameOverFlag set
 
       }
