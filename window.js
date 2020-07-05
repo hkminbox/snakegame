@@ -19,7 +19,10 @@ function draw()
   fill(0,255,150);
   rect(food.x,food.y,scal,scal);
 
-  
+  if(s.eat(food))
+    {
+      foodLocation(); //food location changes on snake touching the food
+    }
 }
 
 function foodLocation()
@@ -57,11 +60,26 @@ function Game()
   this.y = 0;
   this.speedxdir = 1;
   this.speedydir = 0;
+  this.total = 0;
+
   this.directionFn = function(x, y)
   {
     this.speedxdir = x;
     this.speedydir = y;
 
+  }
+
+  this.eat = function(pos) //pos for position
+  {
+    var distance = dist(this.x, this.y, pos.x, pos.y);
+    if(distance < 1)
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
   }
 
   this.update = function()
