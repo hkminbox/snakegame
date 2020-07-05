@@ -2,7 +2,9 @@ let s;
 let scal = 15;
 var food;
 var highScore = 0;
-var CHECK_LOG = false;
+var CHECK_LOG = true;
+var CHECK_LOG_KEYPRESS =true;
+var directionString;
 function setup()
 {
   //1400 x 937          1200 x 900
@@ -29,6 +31,10 @@ function draw()
   if(s.eat(food))
     {
       foodLocation(); //food location changes on snake touching the food
+      if(CHECK_LOG)
+      {
+        console.log('Food taken. Position reset');
+      }
     }
 }
 
@@ -47,18 +53,54 @@ function keyPressed()
   switch(keyCode)
   {
   	case UP_ARROW:
-  		s.directionFn(0, -1);
+      if(s.speedxdir !== 0 && s.speedydir !== 1)
+      {
+  		  s.directionFn(0, -1);
+        directionString = "UP";
+      }
+      else if(CHECK_LOG && s.speedxdir === 0 && s.speedydir === 1)
+      {
+        console.log('Upward movement blocked while moving down');
+      }
   		break;
     case DOWN_ARROW:
-    	s.directionFn(0, 1);
+      if(s.speedxdir !== 0 && s.speedydir !== -1)
+      {
+      	s.directionFn(0, 1);
+        directionString = "DOWN";
+      }
+      else if(CHECK_LOG && s.speedxdir === 0 && s.speedydir === -1)
+      {
+        console.log('Downward movement blocked while moving up');
+      }
     	break;
   	case RIGHT_ARROW:
-    	s.directionFn(1, 0);
+      if(s.speedxdir !== -1 && s.speedydir !== 0)
+      {
+      	s.directionFn(1, 0);
+        directionString = "RIGHT";
+      }
+      else if(CHECK_LOG && s.speedxdir === -1 && s.speedydir === 0)
+      {
+        console.log('Rightward movement blocked while moving left');
+      }
     	break
   	case LEFT_ARROW:
-	    s.directionFn(-1, 0);
+    if(s.speedxdir !== 1 && s.speedydir !== 0)
+      {
+  	    s.directionFn(-1, 0);
+        directionString = "LEFT";
+      }
+      else if(CHECK_LOG && s.speedxdir === 1 && s.speedydir === 0)
+      {
+        console.log('Leftward movement blocked while moving right');
+      }
 	    break;
   }	
+  if(CHECK_LOG_KEYPRESS)
+  {
+    console.log('Key pressed: ' + directionString);
+  }
 }
 
 function Game()
@@ -69,6 +111,10 @@ function Game()
   this.speedydir = 0;
   this.total = 0;
   this.moveHistory = [];  //Location history of head
+  if(CHECK_LOG)
+  {
+    this.moveHistorysave = -1;
+  }
 
   this.directionFn = function(x, y)
   {
@@ -101,6 +147,7 @@ function Game()
       {
         this.total = 0;
         this.moveHistory  = [];
+        console.log('Collision : Game Over');
       }
     }
   }
@@ -120,11 +167,13 @@ function Game()
     this.y = this.y + this.speedydir* scal;
     this.x = constrain(this.x, 0 , width - scal);
     this.y = constrain(this.y, 0 , height - scal);
-    if(CHECK_LOG === true)
+    if(CHECK_LOG && (this.moveHistorysave != this.moveHistory.length))
     {
+      this.moveHistorysave = this.moveHistory.length;
       console.log(this.moveHistory);
+      // console.log(this.moveHistorysave);
+      // console.log(this.moveHistory.length);
     }
-    
 
 
   }
