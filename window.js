@@ -110,5 +110,8 @@ function Game()
       rect(this.moveHistory[i].x, this.moveHistory[i].y, scal, scal);
     }
     rect(this.x,this.y,scal,scal);
+
+    fill(155);
+    text('SCORE: '+ this.moveHistory.length, 570, 15);
   }
 }
