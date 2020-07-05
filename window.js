@@ -86,9 +86,11 @@ function Game()
 
   this.update = function()
   {
-    for (var i = 0; i < this.total-1; i++) 
-    {
-      this.moveHistory[i] = this.moveHistory[i+1];    //Shifting in the array. The last position remains same(No change)
+    if(this.moveHistory.length === this.total){
+      for (var i = 0; i < this.moveHistory.length-1; i++) 
+      {
+        this.moveHistory[i] = this.moveHistory[i+1];    //Shifting in the array. The last position remains same(No change)
+      }
     }
     this.moveHistory[this.total-1] = createVector(this.x,this.y);
 
@@ -103,7 +105,7 @@ function Game()
   this.show = function()
   {
     fill(255);
-    for (var i = 0; i < this.total; i++)
+    for (var i = 0; i < this.moveHistory.length; i++)
     {
       rect(this.moveHistory[i].x, this.moveHistory[i].y, scal, scal);
     }
