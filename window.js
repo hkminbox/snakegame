@@ -2,9 +2,13 @@ let s;
 let scal = 15;
 var food;
 var highScore = 0;
-var CHECK_LOG = true;
-var CHECK_LOG_KEYPRESS =true;
+var CHECK_LOG = false;
+var CHECK_LOG_KEYPRESS = false;
+var CHECK_LOG_ERRORKEYS = false;
 var directionString;
+var init_game = 1;
+var arrowPressed =0;
+var errorFlag = 0;
 function setup()
 {
   //1400 x 937          1200 x 900
@@ -13,6 +17,9 @@ function setup()
   For example, if the canvas dimesions are 640*640 and the scale(scal) = 15, the grids along the edges will have a size(length in horizontal direction, and height vertically) of only 
 	10 (That is 640%15). Hence the sixe has to be 630,645 etc. Otherwise, after moving the snake along the edges, the grid for snake and food may become unaligned, thus making the
   game unplayable as the distance does not become less than zero.*/
+  font = loadFont('assets/Raleway-Regular.ttf');
+  font2 = loadFont('assets/SourceSansPro-Regular.ttf');
+  font_8bit = loadFont('assets/PressStart2P-Regular.ttf');
   s = new Game();
   frameRate(10);
   foodLocation();
@@ -24,7 +31,7 @@ function draw()
 	s.update();
   s.gameover();
 	s.show();
-  
+
   fill(0,255,150);
   rect(food.x,food.y,scal,scal);
 
@@ -49,6 +56,36 @@ function foodLocation()
 
 function keyPressed()
 {
+  if(init_game)
+  {
+    switch(keyCode)
+    {
+    case UP_ARROW:
+      s.directionFn(0, -1);
+      arrowPressed = 1;
+      break;
+    case DOWN_ARROW:
+      s.directionFn(0, 1);
+      arrowPressed = 1;
+      break;
+    case RIGHT_ARROW:
+      s.directionFn(1, 0);
+      arrowPressed = 1;
+      break
+    case LEFT_ARROW:
+      s.directionFn(-1, 0);
+      arrowPressed = 1;
+      break;
+    }
+    if(arrowPressed) 
+    {
+      if(CHECK_LOG)
+      {
+        console.log('Game started');
+      }
+      init_game = 0;
+    }
+  }
 
   switch(keyCode)
   {
@@ -61,6 +98,8 @@ function keyPressed()
       else if(CHECK_LOG && s.speedxdir === 0 && s.speedydir === 1)
       {
         console.log('Upward movement blocked while moving down');
+        errorFlag = 1;
+        directionString = "UP";
       }
   		break;
     case DOWN_ARROW:
@@ -72,6 +111,8 @@ function keyPressed()
       else if(CHECK_LOG && s.speedxdir === 0 && s.speedydir === -1)
       {
         console.log('Downward movement blocked while moving up');
+        errorFlag = 1;
+        directionString = "DOWN";
       }
     	break;
   	case RIGHT_ARROW:
@@ -83,6 +124,8 @@ function keyPressed()
       else if(CHECK_LOG && s.speedxdir === -1 && s.speedydir === 0)
       {
         console.log('Rightward movement blocked while moving left');
+        errorFlag = 1;
+        directionString = "RIGHT";
       }
     	break
   	case LEFT_ARROW:
@@ -94,10 +137,16 @@ function keyPressed()
       else if(CHECK_LOG && s.speedxdir === 1 && s.speedydir === 0)
       {
         console.log('Leftward movement blocked while moving right');
+        errorFlag = 1;
+        directionString = "LEFT";
       }
 	    break;
   }	
-  if(CHECK_LOG_KEYPRESS)
+  if(CHECK_LOG_KEYPRESS && !errorFlag)
+  {
+    console.log('Key pressed: ' + directionString);
+  }
+  if(CHECK_LOG_ERRORKEYS && errorFlag)
   {
     console.log('Key pressed: ' + directionString);
   }
@@ -105,9 +154,9 @@ function keyPressed()
 
 function Game()
 {
-  this.x = 0;
-  this.y = 0;
-  this.speedxdir = 1;
+  this.x = floor(width/scal/2) * scal;
+  this.y = floor(height/scal/2) * scal;
+  this.speedxdir = 0;
   this.speedydir = 0;
   this.total = 0;
   this.moveHistory = [];  //Location history of head
@@ -148,6 +197,16 @@ function Game()
         this.total = 0;
         this.moveHistory  = [];
         console.log('Collision : Game Over');
+        noLoop();
+        fill(0,150,150);
+        textAlign(CENTER);
+        textFont(font_8bit);
+        textSize(24);
+        text('GAME OVER',width/2 ,height/3);
+        textFont(font2);
+        textSize(14);
+        text('HIGH SCORE : ' + highScore , width/2 ,height/3 + 40);
+
       }
     }
   }
@@ -197,11 +256,23 @@ function Game()
       fill(255, 0, 100);
     }
 
-    text('SCORE: '+ this.moveHistory.length, 570, 15);
+    textAlign(LEFT);
+    textFont(font2);
+    textSize(14);
+    text('SCORE: '+ this.moveHistory.length, 560, 15);
     if(highScore<this.moveHistory.length)
     {
       highScore = this.moveHistory.length
     }
     text('HIGH: '+ highScore, 10, 15);
+
+    if(init_game)
+    {
+    fill(0,150,150);
+    textAlign(CENTER);
+    textFont(font);
+    textSize(16);
+    text('Press any arrow key to start',width/2 ,height/3);
+    }
   }
 }
