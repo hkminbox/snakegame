@@ -2,13 +2,14 @@ let s;
 let scal = 15;
 var food;
 var highScore = 0;
-var CHECK_LOG = false;
-var CHECK_LOG_KEYPRESS = false;
-var CHECK_LOG_ERRORKEYS = false;
+var CHECK_LOG = true;
+var CHECK_LOG_KEYPRESS = true;
+var CHECK_LOG_ERRORKEYS = true;
 var directionString;
 var init_game = 1;
 var arrowPressed =0;
 var errorFlag = 0;
+var gameOverFlag = 0
 function setup()
 {
   //1400 x 937          1200 x 900
@@ -53,6 +54,23 @@ function foodLocation()
   food.mult(scal);
 }
 
+function mousePressed()
+{
+  if(gameOverFlag === 1)
+  {
+    s.x = floor(width/scal/2) * scal;
+    s.y = floor(height/scal/2) * scal;
+    foodLocation();
+    s.speedxdir = 0;
+    s.speedydir = 0;
+    init_game = 1;
+    loop();
+    if(CHECK_LOG)
+    {
+      console.log('Mouse clicked. Game restarted . Positions and array reset');
+    }
+  }
+}
 
 function keyPressed()
 {
@@ -196,7 +214,10 @@ function Game()
       {
         this.total = 0;
         this.moveHistory  = [];
-        console.log('Collision : Game Over');
+        if(CHECK_LOG)
+        {
+          console.log('Collision : Game Over');
+        }
         noLoop();
         fill(0,150,150);
         textAlign(CENTER);
@@ -206,6 +227,12 @@ function Game()
         textFont(font2);
         textSize(14);
         text('HIGH SCORE : ' + highScore , width/2 ,height/3 + 40);
+        text('SCORE: '+ this.moveHistory.length,width/2 ,height/3 + 60);
+        text('SCORE: '+ this.moveHistory.length,width/2 ,height/3 + 60);
+        textFont(font);
+        textSize(16);
+        text('Click to continue',width/2 ,height/3 + 80);
+        gameOverFlag = 1;  //gameOverFlag set
 
       }
     }
