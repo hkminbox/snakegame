@@ -61,6 +61,7 @@ function Game()
   this.speedxdir = 1;
   this.speedydir = 0;
   this.total = 0;
+  this.moveHistory = [];  //Location history of head
 
   this.directionFn = function(x, y)
   {
@@ -74,6 +75,7 @@ function Game()
     var distance = dist(this.x, this.y, pos.x, pos.y);
     if(distance < 1)
     {
+      this.total++;
       return true;
     }
     else
@@ -84,6 +86,13 @@ function Game()
 
   this.update = function()
   {
+    for (var i = 0; i < this.total-1; i++) 
+    {
+      this.moveHistory[i] = this.moveHistory[i+1];    //Shifting in the array. The last position remains same(No change)
+    }
+    this.moveHistory[this.total-1] = createVector(this.x,this.y);
+
+
     this.x = this.x + this.speedxdir* scal;
     this.y = this.y + this.speedydir* scal;
     this.x = constrain(this.x, 0 , width - scal);
@@ -94,6 +103,10 @@ function Game()
   this.show = function()
   {
     fill(255);
+    for (var i = 0; i < this.total; i++)
+    {
+      rect(this.moveHistory[i].x, this.moveHistory[i].y, scal, scal);
+    }
     rect(this.x,this.y,scal,scal);
   }
 }
