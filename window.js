@@ -1,11 +1,13 @@
 let s;
-let scal = 20;
+let scal = 15;
+var food;
 
 function setup()
 {
 	createCanvas(640,640);
 	s = new Game();
   frameRate(10);
+  foodLocation();
 }
 
 function draw()
@@ -13,7 +15,22 @@ function draw()
 	background(51);
 	s.update();
 	s.show();
+  
+  fill(0,255,150);
+  rect(food.x,food.y,scal,scal);
+
+  
 }
+
+function foodLocation()
+{
+  var columns = floor(width/scal);
+  var rows = floor(height/scal);
+  food = createVector(floor(random(columns)),floor(random(rows)));
+  food.mult(scal);
+}
+
+
 function keyPressed()
 {
 
@@ -59,6 +76,6 @@ function Game()
   this.show = function()
   {
     fill(255);
-    rect(this.x,this.y,10,10);
+    rect(this.x,this.y,scal,scal);
   }
 }
