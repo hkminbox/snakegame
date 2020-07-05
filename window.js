@@ -2,11 +2,15 @@ let s;
 let scal = 15;
 var food;
 var highScore = 0;
-
+var CHECK_LOG = false;
 function setup()
 {
-	createCanvas(640,640);
-	s = new Game();
+	createCanvas(630,630); 
+  /*canvas dimensions have to be multiples of the scale(scal here). Otherwise, the grids will not be alignes along the four edges, as the grids along the edges do not have enough space.
+  For example, if the canvas dimesions are 640*640 and the scale(scal) = 15, the grids along the edges will have a size(length in horizontal direction, and height vertically) of only 
+	10 (That is 640%15). Hence the sixe has to be 630,645 etc. Otherwise, after moving the snake along the edges, the grid for snake and food may become unaligned, thus making the
+  game unplayable as the distance does not become less than zero.*/
+  s = new Game();
   frameRate(10);
   foodLocation();
 }
@@ -15,6 +19,7 @@ function draw()
 {
 	background(51);
 	s.update();
+  s.gameover();
 	s.show();
   
   fill(0,255,150);
@@ -85,6 +90,20 @@ function Game()
     }
   }
 
+  this.gameover = function()
+  {
+    for(var i = 0; i< this.moveHistory.length; i++)
+    {
+      var loc = this.moveHistory[i];
+      var distance = dist(this.x,this.y,loc.x,loc.y);
+      if(distance < 1)
+      {
+        this.total = 0;
+        this.moveHistory  = [];
+      }
+    }
+  }
+
   this.update = function()
   {
     if(this.moveHistory.length === this.total){
@@ -100,13 +119,19 @@ function Game()
     this.y = this.y + this.speedydir* scal;
     this.x = constrain(this.x, 0 , width - scal);
     this.y = constrain(this.y, 0 , height - scal);
+    if(CHECK_LOG === true)
+    {
+      console.log(this.moveHistory);
+    }
+    
+
 
   }
 
   this.show = function()
   {
     fill(255);
-    for (var i = 0; i < this.moveHistory.length; i++)
+    for (var i = this.moveHistory.length-1;i >= 0; i--)
     {
       rect(this.moveHistory[i].x, this.moveHistory[i].y, scal, scal);
     }
@@ -119,7 +144,6 @@ function Game()
     }
     else if(this.moveHistory.length%10 ===0 || highScore%10 ===0)
     {
-      fill(100, 255, 100);
       fill(255, 0, 100);
     }
 
