@@ -5,6 +5,7 @@ var highScore = 0;
 var CHECK_LOG = false;
 function setup()
 {
+  //1400 x 937          1200 x 900
 	createCanvas(630,630); 
   /*canvas dimensions have to be multiples of the scale(scal here). Otherwise, the grids will not be alignes along the four edges, as the grids along the edges do not have enough space.
   For example, if the canvas dimesions are 640*640 and the scale(scal) = 15, the grids along the edges will have a size(length in horizontal direction, and height vertically) of only 
@@ -142,7 +143,7 @@ function Game()
     {
       fill(100, 255, 100);
     }
-    else if(this.moveHistory.length%10 ===0 || highScore%10 ===0)
+    else if(this.moveHistory.length%10 ===0 || (highScore%10 ===0 && this.moveHistory.length === highScore))
     {
       fill(255, 0, 100);
     }
